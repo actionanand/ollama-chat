@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Cloning Guide
 
-1.  Clone only the remote primary HEAD (default: origin/master)
+1.  Clone only the remote primary HEAD (default: origin/main)
 
 ```bash
 git clone <url> --single-branch
@@ -22,7 +22,7 @@ git clone <url> --branch <branch>
 
 3. Cloning repositories using degit
 
-   - master branch is default.
+   - main branch is default.
 
 ```bash
 npx degit github:user/repo#branch-name <folder-name>

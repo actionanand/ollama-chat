@@ -15,6 +15,9 @@ export class OllamaService {
   private defaultModelName = new BehaviorSubject<string>(''); // Set a default model name
   defaultModelName$ = this.defaultModelName.asObservable();
 
+  // Add AbortController to cancel fetch requests
+  private abortController: AbortController | null = null;
+
   constructor(private http: HttpClient) {}
 
   onChangeDefaultModel(modelName: string): void {
@@ -43,11 +46,15 @@ export class OllamaService {
     // Don't create a new subject, clear the existing one
     this.streamingSubject.next(''); // Clear previous messages
 
+    // Create an AbortController for this request
+    this.abortController = new AbortController();
+
     // Server-Sent Events (SSE) streams
     fetch(`${this.apiUrl}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
+      signal: this.abortController.signal,
     })
       .then(response => {
         console.log('Received response:', response.status);
@@ -100,12 +107,27 @@ export class OllamaService {
         reader.read().then(processStream);
       })
       .catch(error => {
-        console.error('Error streaming response:', error);
-        this.streamingSubject.error(error);
+        // Check for aborted request
+        if (error.name === 'AbortError') {
+          console.log('Request aborted by user');
+        } else {
+          console.error('Error streaming response:', error);
+        }
+        this.streamingSubject.complete();
       });
 
     return this.streamingSubject;
   }
+
+  abortStreaming(): void {
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+      this.streamingSubject.complete();
+    }
+  }
+
+  // Fetch available models from the Ollama API
   getModels(): Observable<any> {
     return this.http.get(`${this.apiUrl}/tags`);
   }

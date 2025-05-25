@@ -9,7 +9,17 @@
     </app-message>
   </div>
   <div class="input-area">
-    <input type="text" [(ngModel)]="userInput" (keydown.enter)="sendMessage()" placeholder="Type your message..." />
-    <button (click)="sendMessage()">Send</button>
+    <input
+      type="text"
+      [(ngModel)]="userInput"
+      (keydown.enter)="!isThinking && !isStreaming && sendMessage()"
+      [placeholder]="isThinking ? 'AI is thinking...' : isStreaming ? 'AI is responding...' : 'Type your message...'"
+      [disabled]="isThinking || isStreaming" />
+
+    <!-- Send button (disabled during thinking) -->
+    <button *ngIf="!isStreaming" (click)="sendMessage()" [disabled]="isThinking">Send</button>
+
+    <!-- Stop button (only shown during streaming) -->
+    <button *ngIf="isStreaming" (click)="stopStreaming()" class="stop-button">Stop</button>
   </div>
 </div>

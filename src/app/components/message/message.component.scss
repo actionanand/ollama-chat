@@ -94,6 +94,10 @@
   color: #888;
   font-size: 14px;
 
+  span:first-child {
+    margin-right: 4px; // Add space after "Thinking" text
+  }
+
   .dot {
     height: 6px;
     width: 6px;

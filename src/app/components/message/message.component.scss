@@ -40,3 +40,28 @@
     }
   }
 }
+
+.sender-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copy-button {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

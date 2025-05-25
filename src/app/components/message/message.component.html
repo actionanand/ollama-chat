@@ -1,6 +1,11 @@
 <div class="message" [class.user-message]="sender === 'User'" [class.ai-message]="sender === 'Ollama'">
   <div class="sender">
-    <span>{{ sender }}</span>
+    <div class="sender-info">
+      <span>{{ sender }}</span>
+      <button *ngIf="sender === 'Ollama'" class="copy-button" (click)="copyMessage()" title="Copy entire message">
+        <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
+      </button>
+    </div>
   </div>
   <div class="content">
     <markdown [data]="content" clipboard></markdown>

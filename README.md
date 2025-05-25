@@ -1,6 +1,86 @@
 # Angular Playground 19
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2. This project is an Angular application that interfaces with the Ollama API to provide a chat experience. Users can send messages and receive streamed responses in real-time.
+
+## Project Structure
+
+```
+ollama-chat
+├── src
+│   ├── app
+│   │   ├── components
+│   │   │   ├── chat
+│   │   │   │   ├── chat.component.ts
+│   │   │   │   ├── chat.component.html
+│   │   │   │   ├── chat.component.scss
+│   │   │   │   └── chat.component.spec.ts
+│   │   │   ├── message
+│   │   │   │   ├── message.component.ts
+│   │   │   │   ├── message.component.html
+│   │   │   │   ├── message.component.scss
+│   │   │   │   └── message.component.spec.ts
+│   │   │   └── model-selector
+│   │   │       ├── model-selector.component.ts
+│   │   │       ├── model-selector.component.html
+│   │   │       ├── model-selector.component.scss
+│   │   │       └── model-selector.component.spec.ts
+│   │   ├── services
+│   │   │   └── ollama.service.ts
+│   │   ├── models
+│   │   │   ├── chat-message.model.ts
+│   │   │   └── ollama-model.model.ts
+│   │   ├── app.component.ts
+│   │   ├── app.component.html
+│   │   ├── app.component.scss
+│   │   ├── app.component.spec.ts
+│   │   ├── app.module.ts
+│   │   └── app-routing.module.ts
+│   ├── assets
+│   │   └── icons
+│   ├── environments
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.scss
+├── angular.json
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.spec.json
+└── README.md
+```
+
+## Features
+
+- **Chat Interface**: Users can send messages and receive responses in real-time.
+- **Model Selection**: Users can choose from available models for the chat.
+- **Streaming Responses**: The application supports streaming responses from the Ollama API.
+
+## Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/actionanand/ollama-chat.git
+   ```
+2. Navigate to the project directory:
+   ```
+   cd ollama-chat
+   ```
+3. Install the dependencies:
+   ```
+   yarn install
+   ```
+
+## Running the Application
+
+To run the application in development mode, use the following command:
+
+```
+yarn develop
+```
+
+Open your browser and navigate to `http://localhost:4212` to access the application.
 
 ## Cloning Guide
 
@@ -230,3 +310,4 @@ To configure the pre-commit hook, simply add a `precommit` npm script. We want t
 - [Angular 19 - 5 Game-Changing Features You Need to Know](https://dev.to/this-is-angular/angular-19-5-game-changing-features-you-need-to-know-32cd)
 - [Changing the visibility of your GitHub Pages site](https://docs.github.com/en/enterprise-cloud@latest/pages/getting-started-with-github-pages/changing-the-visibility-of-your-github-pages-site)
 - [The `package.json` guide](https://flaviocopes.com/package-json/#author)
+- [GenAI — Build LLM Streaming in Angular UI with FastAPI Backend](https://verticalserve.medium.com/genai-build-llm-streaming-in-angular-ui-with-fastapi-backend-68b9fde2dd91)

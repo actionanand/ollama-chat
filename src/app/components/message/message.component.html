@@ -2,9 +2,18 @@
   <div class="sender">
     <div class="sender-info">
       <span>{{ sender }}</span>
-      <button *ngIf="sender === 'Ollama'" class="copy-button" (click)="copyMessage()" title="Copy entire message">
+      <button
+        *ngIf="sender === 'Ollama' && !isStreaming"
+        class="copy-button"
+        (click)="copyMessage()"
+        title="Copy entire message">
         <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
       </button>
+      <span *ngIf="sender === 'Ollama' && isStreaming" class="streaming-indicator">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </span>
     </div>
   </div>
   <div class="content">

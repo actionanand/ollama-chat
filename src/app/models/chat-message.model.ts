@@ -7,4 +7,5 @@ export interface ChatMessage {
 export interface Message {
   content: string;
   sender: string;
+  isStreaming?: boolean;
 }

@@ -14,6 +14,7 @@ export class MessageComponent {
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('message') content!: string;
   @Input() sender!: string;
+  @Input() isStreaming: boolean = false;
 
   copied = false;
 

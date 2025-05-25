@@ -1,6 +1,11 @@
 <div class="chat-container">
   <div class="message-wrapper">
-    <app-message *ngFor="let message of messages" [message]="message.content" [sender]="message.sender"></app-message>
+    <app-message
+      *ngFor="let message of messages"
+      [message]="message.content"
+      [sender]="message.sender"
+      [isStreaming]="message.isStreaming ?? false">
+    </app-message>
   </div>
   <div class="input-area">
     <input type="text" [(ngModel)]="userInput" (keydown.enter)="sendMessage()" placeholder="Type your message..." />

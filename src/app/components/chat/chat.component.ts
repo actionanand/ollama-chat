@@ -65,10 +65,18 @@ export class ChatComponent implements OnInit {
   sendMessage(): void {
     if (this.userInput.trim()) {
       // Add user message
-      this.messages.push({ content: this.userInput, sender: 'User' });
+      this.messages.push({
+        content: this.userInput,
+        sender: 'User',
+        isStreaming: false,
+      });
 
       // Add empty AI message that will be filled with stream
-      this.messages.push({ content: '', sender: 'Ollama' });
+      this.messages.push({
+        content: '',
+        sender: 'Ollama',
+        isStreaming: true,
+      });
 
       // Get current message index
       const aiMessageIndex = this.messages.length - 1;
@@ -87,9 +95,11 @@ export class ChatComponent implements OnInit {
           }
         },
         error: (error: Error) => {
+          this.messages[aiMessageIndex].isStreaming = false; // Set streaming to false on error
           console.error('Error in streaming:', error);
         },
         complete: () => {
+          this.messages[aiMessageIndex].isStreaming = false; // Set streaming to false when complete
           console.log('Streaming completed');
         },
       });

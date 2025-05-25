@@ -4,7 +4,8 @@
       *ngFor="let message of messages"
       [message]="message.content"
       [sender]="message.sender"
-      [isStreaming]="message.isStreaming ?? false">
+      [isStreaming]="message.isStreaming ?? false"
+      [isThinking]="message.isThinking ?? false">
     </app-message>
   </div>
   <div class="input-area">

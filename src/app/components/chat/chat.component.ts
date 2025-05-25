@@ -65,17 +65,14 @@ export class ChatComponent implements OnInit {
   sendMessage(): void {
     if (this.userInput.trim()) {
       // Add user message
-      this.messages.push({
-        content: this.userInput,
-        sender: 'User',
-        isStreaming: false,
-      });
+      this.messages.push({ content: this.userInput, sender: 'User' });
 
-      // Add empty AI message that will be filled with stream
+      // Add initial AI message in "thinking" state
       this.messages.push({
         content: '',
         sender: 'Ollama',
-        isStreaming: true,
+        isThinking: true, // Start with thinking indicator
+        isStreaming: false, // Not streaming yet
       });
 
       // Get current message index
@@ -89,6 +86,11 @@ export class ChatComponent implements OnInit {
       this.streamingSub = this.streamingSubject.subscribe({
         next: (chunk: string) => {
           if (chunk) {
+            // If this is first chunk, change from thinking to streaming
+            if (this.messages[aiMessageIndex].isThinking) {
+              this.messages[aiMessageIndex].isThinking = false;
+              this.messages[aiMessageIndex].isStreaming = true;
+            }
             // Append to the existing message instead of creating new ones
             this.messages[aiMessageIndex].content += chunk;
             console.log('Updated message:', this.messages[aiMessageIndex].content);
@@ -96,10 +98,12 @@ export class ChatComponent implements OnInit {
         },
         error: (error: Error) => {
           this.messages[aiMessageIndex].isStreaming = false; // Set streaming to false on error
+          this.messages[aiMessageIndex].isThinking = false; // Stop thinking state on error
           console.error('Error in streaming:', error);
         },
         complete: () => {
           this.messages[aiMessageIndex].isStreaming = false; // Set streaming to false when complete
+          this.messages[aiMessageIndex].isThinking = false; // Stop thinking state when complete
           console.log('Streaming completed');
         },
       });

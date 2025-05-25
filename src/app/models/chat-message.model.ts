@@ -8,4 +8,5 @@ export interface Message {
   content: string;
   sender: string;
   isStreaming?: boolean;
+  isThinking?: boolean;
 }

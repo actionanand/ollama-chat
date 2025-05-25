@@ -3,13 +3,21 @@
     <div class="sender-info">
       <span>{{ sender }}</span>
       <button
-        *ngIf="sender === 'Ollama' && !isStreaming"
+        *ngIf="sender === 'Ollama' && !isStreaming && !isThinking"
         class="copy-button"
         (click)="copyMessage()"
         title="Copy entire message">
         <span>{{ copied ? 'Copied!' : 'Copy' }}</span>
       </button>
-      <span *ngIf="sender === 'Ollama' && isStreaming" class="streaming-indicator">
+      <!-- Thinking indicator - shows before streaming begins -->
+      <span *ngIf="sender === 'Ollama' && isThinking" class="thinking-indicator">
+        <span>Thinking</span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </span>
+      <!-- Streaming indicator - shows during text streaming -->
+      <span *ngIf="sender === 'Ollama' && isStreaming && !isThinking" class="streaming-indicator">
         <span class="dot"></span>
         <span class="dot"></span>
         <span class="dot"></span>
@@ -17,6 +25,6 @@
     </div>
   </div>
   <div class="content">
-    <markdown [data]="content" clipboard></markdown>
+    <markdown [data]="content" [clipboard]="!isStreaming"></markdown>
   </div>
 </div>

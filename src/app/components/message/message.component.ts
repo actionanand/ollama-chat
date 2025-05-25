@@ -15,6 +15,7 @@ export class MessageComponent {
   @Input('message') content!: string;
   @Input() sender!: string;
   @Input() isStreaming: boolean = false;
+  @Input() isThinking: boolean = false;
 
   copied = false;
 

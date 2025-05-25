@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
 
+import { MarkdownModule } from 'ngx-markdown';
+
 @Component({
   selector: 'app-message',
   standalone: true,
-  imports: [],
+  imports: [MarkdownModule],
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss'],
 })

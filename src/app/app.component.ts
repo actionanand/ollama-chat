@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+
+import { ModelSelectorComponent } from './components/model-selector/model-selector.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [ModelSelectorComponent, ChatComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {}
+export class AppComponent {
+  title = 'Ollama Chat';
+}

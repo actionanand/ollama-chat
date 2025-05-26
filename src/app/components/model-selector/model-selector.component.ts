@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./model-selector.component.scss'],
 })
 export class ModelSelectorComponent implements OnInit {
-  @ViewChild('mySelect') selectedOption!: ElementRef;
+  @ViewChild('mySelect') selectedOption!: ElementRef<HTMLSelectElement>;
 
   models: any[] = [];
   selectedModel: string = '';

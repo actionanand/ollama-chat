@@ -26,7 +26,9 @@ import { Message } from '../../models/chat-message.model';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
-  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+  @ViewChild('messageContainer') private messageContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('inputField') inputField!: ElementRef<HTMLInputElement>;
+
   private shouldScrollToBottom = true;
   private isUserScrolling = false;
   private scrollTimeout: any;
@@ -67,6 +69,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
   ngAfterViewInit() {
     // Add scroll event listener to detect manual scrolling
+    this.focusInput();
     this.messageContainer.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
   }
 
@@ -106,7 +109,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     }
   }
 
-  // filepath: /mnt/c/repos/ar_files/code/ollama-chat/src/app/components/chat/chat.component.ts
+  focusInput(): void {
+    if (this.inputField && !this.isThinking && !this.isStreaming) {
+      this.inputField.nativeElement.focus();
+    }
+  }
+
   sendMessage(): void {
     if (this.userInput.trim()) {
       this.isThinking = true;
@@ -169,8 +177,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
         },
       });
 
-      // Start streaming
-      // this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: this.userInput }]);
+      // Clear user input and refocus
       this.userInput = '';
     }
   }

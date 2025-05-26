@@ -6,11 +6,13 @@
   &.user-message {
     background-color: #e6f7ff;
     align-self: flex-end;
+    border-top-right-radius: 0;
   }
 
   &.ai-message {
     background-color: #f6f6f6;
     align-self: flex-start;
+    border-top-left-radius: 0;
   }
 
   .sender {
@@ -116,6 +118,68 @@
   }
 }
 
+.badge-container {
+  margin-top: 4px;
+  display: flex;
+}
+
+.aborted-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ff5252;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.aborted-content {
+  opacity: 0.85;
+  position: relative;
+}
+
+.aborted-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 3px solid #ff5252;
+  opacity: 0.7;
+  border-radius: 0 0 0 4px;
+}
+
+.sender-label {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+
+  &.user-label {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    border-left: 3px solid #3182ce;
+  }
+
+  &.assistant-label {
+    background-color: #e6fffa;
+    color: #2c7a7b;
+    border-left: 3px solid #38b2ac;
+  }
+}
+
+.user-content {
+  border-left: 3px solid #3182ce;
+  padding-left: 12px;
+}
+
+.assistant-content {
+  border-left: 3px solid #38b2ac;
+  padding-left: 12px;
+}
+
 @keyframes pulse {
   0%,
   100% {
@@ -125,5 +189,25 @@
   50% {
     transform: scale(1.2);
     opacity: 1;
+  }
+}
+
+.message {
+  animation: fadeIn 0.3s ease-in-out;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px); // Subtle lift effect on hover
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

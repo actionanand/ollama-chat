@@ -17,7 +17,7 @@ import { LoggingService } from './services/logging.service';
 export class AppComponent implements OnInit {
   @ViewChild('chatComponent') chatComponent!: ChatComponent;
 
-  title = 'Ollama Chat';
+  title = 'DialogAI';
   loggingEnabled = false;
 
   private loggingServ = inject(LoggingService);

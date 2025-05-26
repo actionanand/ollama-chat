@@ -5,7 +5,8 @@
       [message]="message.content"
       [sender]="message.sender"
       [isStreaming]="message.isStreaming ?? false"
-      [isThinking]="message.isThinking ?? false">
+      [isThinking]="message.isThinking ?? false"
+      [isAborted]="message.isAborted ?? false">
       <!-- Add edit button for user messages -->
       <div *ngIf="message.sender === 'User'" class="message-actions">
         <button class="edit-button" (click)="copyToInput(message.content)" [disabled]="isThinking || isStreaming">
@@ -13,6 +14,12 @@
         </button>
       </div>
     </app-message>
+    <!-- Only if there is no message -->
+    <div *ngIf="messages.length === 0" class="empty-chat">
+      <div class="empty-icon">💬</div>
+      <h3>Start a conversation</h3>
+      <p>Ask a question to begin chatting with DialogAI</p>
+    </div>
   </div>
   <div class="input-area">
     <input

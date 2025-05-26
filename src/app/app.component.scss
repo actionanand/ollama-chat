@@ -6,6 +6,8 @@
   background-color: #f5f5f5;
   box-sizing: border-box;
   overflow: hidden;
+  background: radial-gradient(circle at center, #f0f4f8 0%, #e2e8f0 50%, #cbd5e1 100%);
+  background-attachment: fixed;
 }
 
 .header-row {
@@ -16,8 +18,13 @@
 }
 
 .app-title {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a365d;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 8px 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .app-controls {

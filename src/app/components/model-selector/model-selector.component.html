@@ -1,5 +1,4 @@
 <div class="model-selector">
-  <!-- <h2>Select a Model</h2> -->
   <select #mySelect (change)="onSelectChange()">
     <option value="" disabled selected>Select a model</option>
     <option *ngFor="let model of models" [value]="model.model">{{ model.name }}</option>

@@ -16,6 +16,7 @@ export class MessageComponent implements OnChanges {
   @Input() sender!: string;
   @Input() isStreaming: boolean = false;
   @Input() isThinking: boolean = false;
+  @Input() isAborted: boolean = false;
 
   copied = false;
   content: string = '';

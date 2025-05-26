@@ -8,6 +8,7 @@ import {
   ElementRef,
   AfterViewInit,
   AfterViewChecked,
+  HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
@@ -44,6 +45,20 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
   private defaultModelSub!: Subscription;
   private destroyRef = inject(DestroyRef);
   private ollamaServ = inject(OllamaService);
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardShortcut(event: KeyboardEvent) {
+    // Cmd+K or Ctrl+K to focus input
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      this.focusInput();
+    }
+
+    // Escape to stop streaming
+    if (event.key === 'Escape' && this.isStreaming) {
+      this.stopStreaming();
+    }
+  }
 
   ngOnInit(): void {
     this.defaultModelSub = this.ollamaServ.defaultModelName$.subscribe(modelName => {
@@ -200,17 +215,26 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
   stopStreaming(): void {
     if (this.isStreaming) {
-      // Call service method to abort the fetch request
+      // Abort the stream
       this.ollamaServ.abortStreaming();
 
-      // Update UI state
+      // Find the current streaming message
+      const streamingMessageIndex = this.messages.findIndex(m => m.isStreaming);
+      if (streamingMessageIndex !== -1) {
+        // Create a new reference to trigger change detection
+        this.messages[streamingMessageIndex] = {
+          ...this.messages[streamingMessageIndex],
+          isStreaming: false,
+          isAborted: true,
+        };
+      }
+
       this.isStreaming = false;
 
-      // Find the current streaming message and mark it as not streaming
-      const streamingMessage = this.messages.find(m => m.isStreaming);
-      if (streamingMessage) {
-        streamingMessage.isStreaming = false;
-      }
+      // Focus back on input
+      setTimeout(() => {
+        this.focusInput();
+      }, 10);
     }
   }
 

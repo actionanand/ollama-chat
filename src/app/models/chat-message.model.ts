@@ -9,4 +9,5 @@ export interface Message {
   sender: string;
   isStreaming?: boolean;
   isThinking?: boolean;
+  isAborted?: boolean;
 }

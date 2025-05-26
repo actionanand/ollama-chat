@@ -213,4 +213,31 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
       }
     }
   }
+
+  resetChat(): void {
+    // Cancel any ongoing streaming
+    if (this.isStreaming) {
+      this.stopStreaming();
+    }
+
+    // Clear all messages
+    this.messages = [];
+
+    // Reset states
+    this.isThinking = false;
+    this.isStreaming = false;
+    this.userInput = '';
+
+    // Focus the input field
+    setTimeout(() => {
+      this.focusInput();
+    }, 0);
+
+    // Scroll to top (if needed)
+    if (this.messageContainer) {
+      this.messageContainer.nativeElement.scrollTop = 0;
+    }
+
+    console.log('Chat reset complete');
+  }
 }

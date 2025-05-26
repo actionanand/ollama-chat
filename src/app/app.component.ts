@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef, ViewChild } from '@angular/core';
+
+import { Subscription } from 'rxjs';
 
 import { ModelSelectorComponent } from './components/model-selector/model-selector.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { LoggingService } from './services/logging.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  @ViewChild('chatComponent') chatComponent!: ChatComponent;
+
   title = 'Ollama Chat';
   loggingEnabled = false;
 
@@ -37,5 +40,12 @@ export class AppComponent implements OnInit {
   toggleLogging(event: any): void {
     const isEnabled = event.target.checked;
     this.loggingServ.toggleLogging(isEnabled);
+  }
+
+  // instead of using 'eventEmitter', we've child component reference
+  clearChat(): void {
+    if (this.chatComponent) {
+      this.chatComponent.resetChat();
+    }
   }
 }

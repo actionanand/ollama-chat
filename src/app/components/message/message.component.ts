@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -10,18 +10,22 @@ import { MarkdownModule } from 'ngx-markdown';
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss'],
 })
-export class MessageComponent {
+export class MessageComponent implements OnChanges {
   // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('message') content!: string;
+  @Input() message!: string;
   @Input() sender!: string;
   @Input() isStreaming: boolean = false;
   @Input() isThinking: boolean = false;
 
   copied = false;
+  content: string = '';
 
-  constructor() {
-    this.content = '';
-    this.sender = '';
+  ngOnChanges(changes: SimpleChanges) {
+    // Make sure to update our content when message changes
+    if (changes['message']) {
+      this.content = changes['message'].currentValue;
+      console.log('Message updated:', this.content);
+    }
   }
 
   copyMessage() {

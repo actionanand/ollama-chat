@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { OllamaService } from '../../services/ollama.service';
 import { MessageComponent } from '../message/message.component';
@@ -19,7 +19,6 @@ export class ChatComponent implements OnInit {
   messages: Message[] = [];
   userInput: string = '';
   model: string = 'default-model'; // Set a default model
-  streamingSubject: Subject<string>;
 
   isThinking: boolean = false;
   isStreaming: boolean = false;
@@ -27,27 +26,9 @@ export class ChatComponent implements OnInit {
   private streamingSub!: Subscription;
   private defaultModelSub!: Subscription;
   private destroyRef = inject(DestroyRef);
-
-  constructor(private ollamaServ: OllamaService) {
-    this.streamingSubject = this.ollamaServ.streamingSubject;
-  }
+  private ollamaServ = inject(OllamaService);
 
   ngOnInit(): void {
-    this.streamingSub = this.streamingSubject.subscribe({
-      next: (message: string) => {
-        if (message) {
-          this.messages.push({ content: message, sender: 'Ollama' });
-          console.log('Received message:', message);
-        }
-      },
-      error: (error: Error) => {
-        console.error('Error in streaming:', error);
-      },
-      complete: () => {
-        console.log('Streaming completed');
-      },
-    });
-
     this.defaultModelSub = this.ollamaServ.defaultModelName$.subscribe(modelName => {
       if (modelName) {
         this.model = modelName;
@@ -58,6 +39,7 @@ export class ChatComponent implements OnInit {
       if (this.streamingSub) {
         this.streamingSub.unsubscribe();
       }
+
       if (this.defaultModelSub) {
         this.defaultModelSub.unsubscribe();
       }
@@ -82,12 +64,17 @@ export class ChatComponent implements OnInit {
       // Get current message index
       const aiMessageIndex = this.messages.length - 1;
 
+      // Always unsubscribe from previous subscription
       // Update subscription to accumulate content
       if (this.streamingSub) {
         this.streamingSub.unsubscribe();
       }
 
-      this.streamingSub = this.streamingSubject.subscribe({
+      // Start streaming and capture the NEW subject returned
+      const subject = this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: this.userInput }]);
+
+      // Subscribe to the NEW subject
+      this.streamingSub = subject.subscribe({
         next: (chunk: string) => {
           if (chunk) {
             // If this is first chunk, change from thinking to streaming
@@ -119,7 +106,7 @@ export class ChatComponent implements OnInit {
       });
 
       // Start streaming
-      this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: this.userInput }]);
+      // this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: this.userInput }]);
       this.userInput = '';
     }
   }

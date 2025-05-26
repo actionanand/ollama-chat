@@ -1,4 +1,14 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  AfterViewChecked,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 
@@ -15,7 +25,12 @@ import { Message } from '../../models/chat-message.model';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
+  @ViewChild('messageContainer') private messageContainer!: ElementRef;
+  private shouldScrollToBottom = true;
+  private isUserScrolling = false;
+  private scrollTimeout: any;
+
   messages: Message[] = [];
   userInput: string = '';
   model: string = 'default-model'; // Set a default model
@@ -43,7 +58,52 @@ export class ChatComponent implements OnInit {
       if (this.defaultModelSub) {
         this.defaultModelSub.unsubscribe();
       }
+
+      if (this.scrollTimeout) {
+        clearTimeout(this.scrollTimeout);
+      }
     });
+  }
+
+  ngAfterViewInit() {
+    // Add scroll event listener to detect manual scrolling
+    this.messageContainer.nativeElement.addEventListener('scroll', this.onScroll.bind(this));
+  }
+
+  ngAfterViewChecked() {
+    if (this.shouldScrollToBottom && !this.isUserScrolling) {
+      this.scrollToBottom();
+    }
+  }
+
+  onScroll(): void {
+    // Mark that user is manually scrolling
+    this.isUserScrolling = true;
+
+    // Clear any existing timeout
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
+
+    // Set timeout to stop detecting user scrolling
+    this.scrollTimeout = setTimeout(() => {
+      this.isUserScrolling = false;
+
+      // Check if user scrolled to bottom
+      const element = this.messageContainer.nativeElement;
+      const atBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 30;
+
+      // Only auto-scroll if user is at the bottom
+      this.shouldScrollToBottom = atBottom;
+    }, 100);
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
   }
 
   // filepath: /mnt/c/repos/ar_files/code/ollama-chat/src/app/components/chat/chat.component.ts
@@ -84,6 +144,10 @@ export class ChatComponent implements OnInit {
               this.isThinking = false;
               this.isStreaming = true;
             }
+
+            this.shouldScrollToBottom = true;
+            this.isUserScrolling = false;
+
             // Append to the existing message instead of creating new ones
             this.messages[aiMessageIndex].content += chunk;
             console.log('Updated message:', this.messages[aiMessageIndex].content);

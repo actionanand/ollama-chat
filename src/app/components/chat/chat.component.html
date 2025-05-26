@@ -1,5 +1,5 @@
 <div class="chat-container">
-  <div class="message-wrapper">
+  <div class="message-wrapper" #messageContainer>
     <app-message
       *ngFor="let message of messages"
       [message]="message.content"

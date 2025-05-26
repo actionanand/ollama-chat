@@ -6,6 +6,12 @@
       [sender]="message.sender"
       [isStreaming]="message.isStreaming ?? false"
       [isThinking]="message.isThinking ?? false">
+      <!-- Add edit button for user messages -->
+      <div *ngIf="message.sender === 'User'" class="message-actions">
+        <button class="edit-button" (click)="copyToInput(message.content)" [disabled]="isThinking || isStreaming">
+          Edit
+        </button>
+      </div>
     </app-message>
   </div>
   <div class="input-area">

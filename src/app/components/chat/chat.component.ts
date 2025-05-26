@@ -115,6 +115,22 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     }
   }
 
+  copyToInput(content: string): void {
+    // Copy the message content to the input field
+    this.userInput = content;
+
+    // Focus the input field with slight delay to ensure UI is updated
+    setTimeout(() => {
+      if (this.inputField) {
+        this.inputField.nativeElement.focus();
+
+        // Optional: Position cursor at the end of the text
+        const inputElement = this.inputField.nativeElement;
+        inputElement.selectionStart = inputElement.selectionEnd = content.length;
+      }
+    }, 0);
+  }
+
   sendMessage(): void {
     if (this.userInput.trim()) {
       this.isThinking = true;

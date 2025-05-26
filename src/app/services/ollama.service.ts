@@ -1,4 +1,3 @@
-// filepath: /ollama-chat/ollama-chat/src/app/services/ollama.service.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

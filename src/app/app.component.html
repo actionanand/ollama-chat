@@ -1,7 +1,14 @@
 <div>
   <div class="header-row">
     <div class="app-title">{{ title }}</div>
-    <app-model-selector></app-model-selector>
+    <div class="app-controls">
+      <label class="toggle-logging">
+        <input type="checkbox" [checked]="loggingEnabled" (change)="toggleLogging($event)" />
+        <span class="slider"></span>
+        <span class="label">Console Logs</span>
+      </label>
+      <app-model-selector></app-model-selector>
+    </div>
   </div>
   <app-chat></app-chat>
 </div>

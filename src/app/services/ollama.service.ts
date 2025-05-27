@@ -2,7 +2,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+import { ErrorDialogService } from './error-dialog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +19,10 @@ export class OllamaService {
   // Add AbortController to cancel fetch requests
   private abortController: AbortController | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private errorDialogServ: ErrorDialogService,
+  ) {}
 
   onChangeDefaultModel(modelName: string): void {
     this.defaultModelName.next(modelName);
@@ -108,6 +114,13 @@ export class OllamaService {
 
   // Fetch available models from the Ollama API
   getModels(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/tags`);
+    return this.http.get(`${this.apiUrl}/tags`).pipe(
+      catchError(error => {
+        // Show the error dialog
+        this.errorDialogServ.showError();
+        // Re-throw the error so subscribers can still handle it
+        return throwError(() => error);
+      }),
+    );
   }
 }

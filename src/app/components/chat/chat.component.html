@@ -1,0 +1,76 @@
+<div class="chat-container">
+  <div class="message-wrapper" #messageContainer>
+    <app-message
+      *ngFor="let message of messages"
+      [message]="message.content"
+      [sender]="message.sender"
+      [isStreaming]="message.isStreaming ?? false"
+      [isThinking]="message.isThinking ?? false"
+      [isAborted]="message.isAborted ?? false"
+      [imgUrl]="message.imgUrl ?? ''"
+      [llm]="message.llm ?? ''">
+      <!-- Add edit button for user messages -->
+      <div *ngIf="message.sender === 'User'" class="message-actions">
+        <button class="edit-button" (click)="copyToInput(message.content)" [disabled]="isThinking || isStreaming">
+          Edit
+        </button>
+      </div>
+    </app-message>
+    <!-- Only if there is no message -->
+    <div *ngIf="messages.length === 0" class="empty-chat">
+      <div class="empty-icon">💬</div>
+      <h3>Start a conversation</h3>
+      <p>Ask a question to begin chatting with DialogAI</p>
+    </div>
+  </div>
+  <div class="input-area" [ngClass]="{ 'has-uploaded-image': uploadedImgUrl }">
+    <!-- Custom styled image upload button -->
+    <label
+      for="fileInput"
+      class="image-upload-label"
+      [ngStyle]="{
+        cursor: isThinking || isStreaming || isImgUploading ? 'not-allowed' : 'pointer',
+        opacity: isThinking || isStreaming || isImgUploading ? 0.6 : 1,
+        'pointer-events': isThinking || isStreaming || isImgUploading ? 'none' : 'auto',
+      }"
+      [ngClass]="{
+        'image-upload-success': uploadedImgUrl,
+        'image-upload-loading': isImgUploading && !uploadedImgUrl,
+      }"
+      title="Upload image">
+      <span class="image-upload-icon">📷</span>
+      <ng-container *ngIf="uploadedImgUrl">
+        <span class="uploaded-image-thumb-wrapper">
+          <img [src]="uploadedImgUrl" alt="Uploaded image" class="uploaded-image-thumb" />
+          <button type="button" class="remove-image-btn" (click)="removeUploadedImg()" title="Remove image">
+            &times;
+          </button>
+          <span class="image-expiry-note">Uploaded image will be deleted in 10 min</span>
+        </span>
+      </ng-container>
+    </label>
+    <input
+      #fileInput
+      id="fileInput"
+      type="file"
+      accept="image/*"
+      (change)="onImageSelected($event)"
+      style="display: none"
+      [disabled]="isThinking || isStreaming || isImgUploading" />
+
+    <input
+      #inputField
+      type="text"
+      [(ngModel)]="userInput"
+      (keydown.enter)="!isThinking && !isStreaming && sendMessage()"
+      [placeholder]="isThinking ? 'AI is thinking...' : isStreaming ? 'AI is responding...' : 'Type your message...'"
+      [disabled]="isThinking || isStreaming || isImgUploading"
+      [ngClass]="uploadedImgUrl ? 'img-left-padding' : ''" />
+
+    <!-- Send button (disabled during thinking) -->
+    <button *ngIf="!isStreaming" (click)="sendMessage()" [disabled]="isThinking || isImgUploading">Send</button>
+
+    <!-- Stop button (only shown during streaming) -->
+    <button *ngIf="isStreaming" (click)="stopStreaming()" class="stop-button">Stop</button>
+  </div>
+</div>

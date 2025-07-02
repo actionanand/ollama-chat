@@ -1,3 +1,15 @@
-<div>Angular 19</div>
-
-<router-outlet />
+<div>
+  <div class="header-row">
+    <div class="app-title">{{ title }}</div>
+    <div class="app-controls">
+      <button class="clear-button" (click)="clearChat()">Clear Chat</button>
+      <label class="toggle-logging">
+        <input type="checkbox" [checked]="loggingEnabled" (change)="toggleLogging($event)" />
+        <span class="slider"></span>
+        <span class="label">Logs</span>
+      </label>
+      <app-model-selector></app-model-selector>
+    </div>
+  </div>
+  <app-chat #chatComponent></app-chat>
+</div>

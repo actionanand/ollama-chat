@@ -1,0 +1,244 @@
+.message {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 10px;
+
+  &.user-message {
+    background-color: #e6f7ff;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+  }
+
+  &.ai-message {
+    background-color: #f6f6f6;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+  }
+
+  .sender {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .content {
+    ::ng-deep {
+      pre {
+        background-color: #f1f1f1;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+      }
+
+      code {
+        font-family: monospace;
+        background-color: #f1f1f1;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+    }
+  }
+}
+
+.sender-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copy-button {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.streaming-indicator {
+  display: flex;
+  align-items: center;
+
+  .dot {
+    height: 8px;
+    width: 8px;
+    background-color: #999;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: pulse 1.5s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 1s;
+    }
+  }
+}
+
+.thinking-indicator {
+  display: flex;
+  align-items: center;
+  color: #888;
+  font-size: 14px;
+
+  span:first-child {
+    margin-right: 4px; // Add space after "Thinking" text
+  }
+
+  .dot {
+    height: 6px;
+    width: 6px;
+    background-color: #888;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: pulse 1.5s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 1s;
+    }
+  }
+}
+
+.badge-container {
+  margin-top: 4px;
+  display: flex;
+}
+
+.aborted-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ff5252;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.aborted-content {
+  opacity: 0.85;
+  position: relative;
+}
+
+.aborted-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 3px solid #ff5252;
+  opacity: 0.7;
+  border-radius: 0 0 0 4px;
+}
+
+.sender-label {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+
+  &.user-label {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    border-left: 3px solid #3182ce;
+  }
+
+  &.assistant-label {
+    background-color: #e6fffa;
+    color: #2c7a7b;
+    border-left: 3px solid #38b2ac;
+  }
+}
+
+.sender-label-llm {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 7px 2px 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(90deg, #38b2ac 60%, #4299e1 100%);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  letter-spacing: 0.02em;
+  opacity: 0.92;
+  vertical-align: middle;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.user-content {
+  border-left: 3px solid #3182ce;
+  padding-left: 12px;
+  display: flex;
+}
+
+.assistant-content {
+  border-left: 3px solid #38b2ac;
+  padding-left: 12px;
+}
+
+.user-message-thumb-inline {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #e2e8f0;
+  margin-right: 8px;
+  margin-bottom: -4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.message {
+  animation: fadeIn 0.3s ease-in-out;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px); // Subtle lift effect on hover
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

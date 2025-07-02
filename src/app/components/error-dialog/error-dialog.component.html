@@ -1,0 +1,38 @@
+<div class="error-dialog-overlay" *ngIf="isVisible">
+  <div class="error-dialog">
+    <div class="error-dialog-header">
+      <div class="status-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12" y2="16"></line>
+        </svg>
+      </div>
+      <h2>Connection Issue Detected</h2>
+    </div>
+    <div class="error-dialog-content">
+      <p>The AI service couldn't establish a connection to Ollama.</p>
+      <div class="info-box">
+        <p><strong>Please verify:</strong></p>
+        <ul>
+          <li>Ollama is running on your system</li>
+          <li>Port 11434 is accessible</li>
+          <li>No firewall is blocking the connection</li>
+        </ul>
+      </div>
+    </div>
+    <div class="error-dialog-actions">
+      <button class="secondary-button" (click)="close()">Dismiss</button>
+      <button class="primary-button" (click)="retry()">Retry Connection</button>
+    </div>
+  </div>
+</div>

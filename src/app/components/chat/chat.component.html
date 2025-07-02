@@ -22,6 +22,9 @@
     </div>
   </div>
   <div class="input-area">
+    <!-- Image upload button -->
+    <input #fileInput id="fileInput" type="file" accept="image/*" (change)="onImageSelected($event)" />
+
     <input
       #inputField
       type="text"

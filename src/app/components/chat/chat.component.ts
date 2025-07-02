@@ -18,6 +18,7 @@ import { Subscription } from 'rxjs';
 import { OllamaService } from '../../services/ollama.service';
 import { MessageComponent } from '../message/message.component';
 import { Message } from '../../models/chat-message.model';
+import { environment as env } from '../../../environments/environment';
 
 @Component({
   selector: 'app-chat',
@@ -29,6 +30,7 @@ import { Message } from '../../models/chat-message.model';
 export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
   @ViewChild('messageContainer') private messageContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('inputField') inputField!: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   private shouldScrollToBottom = true;
   private isUserScrolling = false;
@@ -45,6 +47,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
   private defaultModelSub!: Subscription;
   private destroyRef = inject(DestroyRef);
   private ollamaServ = inject(OllamaService);
+
+  selectedImage: {
+    file: File;
+    url: string;
+    name: string;
+  } | null = null;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardShortcut(event: KeyboardEvent) {
@@ -144,6 +152,53 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
         inputElement.selectionStart = inputElement.selectionEnd = content.length;
       }
     }, 0);
+  }
+
+  // Method to manually trigger file input click
+  triggerFileInput(event: Event): void {
+    // Prevent click if disabled
+    if (this.isThinking || this.isStreaming) {
+      return;
+    }
+
+    // Stop event from propagating to prevent double-clicks
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Programmatically click the hidden file input
+    this.fileInput.nativeElement.click();
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64String = (reader.result as string).split(',')[1];
+        try {
+          const apiKey = env.imgbbKey;
+          const formData = new FormData();
+          formData.append('key', apiKey);
+          formData.append('image', base64String);
+          const response = await fetch('https://api.imgbb.com/1/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await response.json();
+          if (data && data.data && data.data.url) {
+            console.log('Uploaded image URL:', data.data.url);
+            // Optionally, you can append the image URL to the chat input or display it
+            // this.userInput += ` ${data.data.url}`;
+          } else {
+            console.error('Failed to get image URL from imgbb response:', data);
+          }
+        } catch (error) {
+          console.error('Error uploading image to imgbb:', error);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   sendMessage(): void {

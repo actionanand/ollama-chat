@@ -26,6 +26,7 @@
 
 .input-area {
   display: flex;
+  align-items: center;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -103,6 +104,33 @@
       &:hover {
         background-color: #c53030;
       }
+    }
+  }
+
+  .upload-image-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    transition: background-color 0.2s;
+
+    svg {
+      color: #4a5568;
+    }
+
+    &:hover {
+      background-color: #e5e7eb;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }

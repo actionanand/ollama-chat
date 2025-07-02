@@ -11,7 +11,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 
 import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,7 +23,7 @@ import { Message } from '../../models/chat-message.model';
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [FormsModule, NgFor, MessageComponent, NgIf, NgClass],
+  imports: [FormsModule, NgFor, MessageComponent, NgIf, NgClass, NgStyle],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
@@ -205,6 +205,8 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     if (this.userInput.trim()) {
       this.isThinking = true;
 
+      console.log('img : ', this.uploadedImgUrl);
+
       let msgWithUrl = '';
       msgWithUrl = this.uploadedImgUrl ? `${this.uploadedImgUrl} ${this.userInput}` : this.userInput;
 
@@ -229,7 +231,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
       }
 
       // Start streaming and capture the NEW subject returned
-      const subject = this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: this.userInput }]);
+      const subject = this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: msgWithUrl }]);
 
       // Subscribe to the NEW subject
       this.streamingSub = subject.subscribe({
@@ -329,5 +331,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     }
 
     console.log('Chat reset complete');
+  }
+
+  removeUploadedImg(): void {
+    this.uploadedImgUrl = '';
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 }

@@ -61,6 +61,11 @@
     border-radius: 6px;
     color: #2d3748;
     background-color: transparent;
+    min-width: 0;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
     &:focus {
       outline: none;
@@ -69,6 +74,9 @@
 
     &::placeholder {
       color: #a0aec0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     &:disabled {
@@ -76,6 +84,14 @@
       color: #a0aec0;
       cursor: not-allowed;
     }
+
+    &.has-uploaded-image {
+      padding-left: 80px !important; // Extra space for image and clear placeholder
+    }
+  }
+
+  .img-left-padding {
+    padding-left: 40px; /* Adjust padding to accommodate image thumbnail */
   }
 
   button {
@@ -135,6 +151,7 @@
   }
 
   .image-upload-label {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,6 +164,7 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
     transition: background 0.2s;
     border: 1px solid #e2e8f0;
+    overflow: visible;
 
     &:hover {
       background: #e0e7ef;
@@ -170,6 +188,79 @@
     font-size: 1.3rem;
     color: #4b5563;
     pointer-events: none;
+  }
+
+  .uploaded-image-thumb-wrapper {
+    position: absolute;
+    right: -38px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    /* Ensure remove button is visible */
+    z-index: 10;
+  }
+
+  .uploaded-image-thumb {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    vertical-align: middle;
+    margin-left: 0;
+  }
+
+  .image-expiry-note {
+    display: none;
+    position: absolute;
+    left: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    color: #64748b;
+    font-size: 0.85rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    z-index: 10;
+  }
+
+  .uploaded-image-thumb-wrapper:hover .image-expiry-note {
+    display: block;
+  }
+
+  .remove-image-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #e53e3e;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    font-size: 0.85rem;
+    line-height: 12px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 20;
+    transition:
+      background 0.2s,
+      color 0.2s;
+
+    &:hover {
+      background: #e53e3e;
+      color: #fff;
+    }
   }
 }
 

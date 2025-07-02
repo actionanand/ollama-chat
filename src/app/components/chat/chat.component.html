@@ -22,8 +22,24 @@
     </div>
   </div>
   <div class="input-area">
-    <!-- Image upload button -->
-    <input #fileInput id="fileInput" type="file" accept="image/*" (change)="onImageSelected($event)" />
+    <!-- Custom styled image upload button -->
+    <label
+      for="fileInput"
+      class="image-upload-label"
+      [ngClass]="{
+        'image-upload-success': uploadedImgUrl,
+        'image-upload-loading': isImgUploading && !uploadedImgUrl,
+      }"
+      title="Upload image">
+      <span class="image-upload-icon">📷</span>
+    </label>
+    <input
+      #fileInput
+      id="fileInput"
+      type="file"
+      accept="image/*"
+      (change)="onImageSelected($event)"
+      style="display: none" />
 
     <input
       #inputField

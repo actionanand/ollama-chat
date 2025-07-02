@@ -11,7 +11,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 
 import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,7 +23,7 @@ import { Message } from '../../models/chat-message.model';
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [FormsModule, NgFor, MessageComponent, NgIf],
+  imports: [FormsModule, NgFor, MessageComponent, NgIf, NgClass],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })

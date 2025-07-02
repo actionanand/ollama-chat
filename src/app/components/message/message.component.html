@@ -1,8 +1,13 @@
 <div class="message" [class.user-message]="sender === 'User'" [class.ai-message]="sender === 'Ollama'">
   <div class="sender">
     <div class="sender-info">
-      <span class="sender-label" [class.user-label]="sender === 'User'" [class.assistant-label]="sender === 'Ollama'">
-        {{ sender === 'Ollama' ? '👨‍💻 Assistant' : '👤 You' }}
+      <span class="sender-label-wrap">
+        <span class="sender-label" [class.user-label]="sender === 'User'" [class.assistant-label]="sender === 'Ollama'">
+          {{ sender === 'Ollama' ? '👨‍💻 Assistant' : '👤 You' }}
+        </span>
+        @if (sender === 'Ollama') {
+          <span class="sender-label-llm"> {{ llm }} </span>
+        }
       </span>
       <!-- Copy button -->
       <button
@@ -35,6 +40,9 @@
   </div>
 
   <div class="content" [class.user-content]="sender === 'User'" [class.assistant-content]="sender === 'Ollama'">
+    <ng-container *ngIf="imgUrl && sender === 'User'">
+      <img [src]="imgUrl" alt="User uploaded image" class="user-message-thumb-inline" />
+    </ng-container>
     <markdown [data]="content" [clipboard]="!isStreaming"></markdown>
   </div>
 </div>

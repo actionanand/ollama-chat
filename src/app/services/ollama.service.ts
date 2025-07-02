@@ -191,4 +191,48 @@ export class OllamaService {
   uploadImageToImgbb(file: File): Observable<string> {
     return this.fileToBase64(file).pipe(switchMap(base64 => this.uploadBase64ToImgbb(base64)));
   }
+
+  /**
+   * Uploads an image file to imgbb and returns a Promise of the image URL.
+   * @param file The image file to upload
+   * @returns Promise<string> The uploaded image URL
+   */
+
+  /*
+  async uploadImageToImgbbPromise(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64String = (reader.result as string).split(',')[1];
+          const apiKey = env.imgbbKey || 'xxxxxx';
+          const uploadUrl = env.imgbbUploadUrl || 'https://api.imgbb.com/1/upload';
+          const formData = new FormData();
+          formData.append('key', apiKey);
+          formData.append('image', base64String);
+
+          const response = await fetch(uploadUrl, {
+            method: 'POST',
+            body: formData,
+          });
+          console.log('Imgbb raw response:', response);
+
+          const data: ImgbbResponse = await response.json();
+          console.log('Imgbb parsed data:', data);
+
+          if (data && data.data && data.data.url) {
+            resolve(data.data.url);
+          } else {
+            reject(new Error('Failed to get image URL from imgbb response'));
+          }
+
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = (e) => reject(e);
+      reader.readAsDataURL(file);
+    });
+  }
+  */
 }

@@ -170,14 +170,45 @@
   }
 }
 
+.sender-label-llm {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 7px 2px 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(90deg, #38b2ac 60%, #4299e1 100%);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  letter-spacing: 0.02em;
+  opacity: 0.92;
+  vertical-align: middle;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
 .user-content {
   border-left: 3px solid #3182ce;
   padding-left: 12px;
+  display: flex;
 }
 
 .assistant-content {
   border-left: 3px solid #38b2ac;
   padding-left: 12px;
+}
+
+.user-message-thumb-inline {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #e2e8f0;
+  margin-right: 8px;
+  margin-bottom: -4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  vertical-align: middle;
 }
 
 @keyframes pulse {

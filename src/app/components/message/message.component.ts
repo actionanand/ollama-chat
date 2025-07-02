@@ -17,6 +17,8 @@ export class MessageComponent implements OnChanges {
   @Input() isStreaming: boolean = false;
   @Input() isThinking: boolean = false;
   @Input() isAborted: boolean = false;
+  @Input() imgUrl: string = '';
+  @Input() llm: string = ''; // Optional LLM model used for the message generation
 
   copied = false;
   content: string = '';

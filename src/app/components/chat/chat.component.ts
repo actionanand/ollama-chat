@@ -201,22 +201,39 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     }
   }
 
+  /* // promised based, using fetch api instead of httpClient
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.ollamaServ.uploadImageToImgbbPromise(file)
+        .then((url) => {
+          console.log('Uploaded image URL:', url);
+          // Optionally, you can append the image URL to the chat input or display it
+          // this.userInput += ` ${url}`;
+        })
+        .catch((error) => {
+          console.error('Error uploading image to imgbb:', error);
+        });
+    }
+  }
+  */
+
   sendMessage(): void {
     if (this.userInput.trim()) {
       this.isThinking = true;
 
-      console.log('img : ', this.uploadedImgUrl);
-
-      let msgWithUrl = '';
-      msgWithUrl = this.uploadedImgUrl ? `${this.uploadedImgUrl} ${this.userInput}` : this.userInput;
+      let userInputWithImgUrl = '';
+      userInputWithImgUrl = this.uploadedImgUrl ? `${this.uploadedImgUrl} ${this.userInput}` : this.userInput;
 
       // Add user message
-      this.messages.push({ content: msgWithUrl, sender: 'User' });
+      this.messages.push({ content: this.userInput, sender: 'User', imgUrl: this.uploadedImgUrl });
 
       // Add initial AI message in "thinking" state
       this.messages.push({
         content: '',
         sender: 'Ollama',
+        llm: this.model,
         isThinking: true, // Start with thinking indicator
         isStreaming: false, // Not streaming yet
       });
@@ -231,7 +248,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
       }
 
       // Start streaming and capture the NEW subject returned
-      const subject = this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: msgWithUrl }]);
+      const subject = this.ollamaServ.streamMessage(this.model, [{ role: 'user', content: userInputWithImgUrl }]);
 
       // Subscribe to the NEW subject
       this.streamingSub = subject.subscribe({

@@ -6,7 +6,9 @@
       [sender]="message.sender"
       [isStreaming]="message.isStreaming ?? false"
       [isThinking]="message.isThinking ?? false"
-      [isAborted]="message.isAborted ?? false">
+      [isAborted]="message.isAborted ?? false"
+      [imgUrl]="message.imgUrl ?? ''"
+      [llm]="message.llm ?? ''">
       <!-- Add edit button for user messages -->
       <div *ngIf="message.sender === 'User'" class="message-actions">
         <button class="edit-button" (click)="copyToInput(message.content)" [disabled]="isThinking || isStreaming">

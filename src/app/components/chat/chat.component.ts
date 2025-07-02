@@ -14,11 +14,11 @@ import { FormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
 
 import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OllamaService } from '../../services/ollama.service';
 import { MessageComponent } from '../message/message.component';
 import { Message } from '../../models/chat-message.model';
-import { environment as env } from '../../../environments/environment';
 
 @Component({
   selector: 'app-chat',
@@ -39,6 +39,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
   messages: Message[] = [];
   userInput: string = '';
   model: string = 'default-model'; // Set a default model
+
+  uploadedImgUrl = '';
+  isImgUploading: boolean = false; // Track image upload state
 
   isThinking: boolean = false;
   isStreaming: boolean = false;
@@ -73,6 +76,10 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
       if (modelName) {
         this.model = modelName;
       }
+    });
+
+    this.ollamaServ.isImgUploading$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isUploading => {
+      this.isImgUploading = isUploading;
     });
 
     this.destroyRef.onDestroy(() => {
@@ -172,40 +179,37 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
+      this.ollamaServ.onChangeIsImgUploading(true); // Set uploading state
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64String = (reader.result as string).split(',')[1];
-        try {
-          const apiKey = env.imgbbKey;
-          const formData = new FormData();
-          formData.append('key', apiKey);
-          formData.append('image', base64String);
-          const response = await fetch('https://api.imgbb.com/1/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          const data = await response.json();
-          if (data && data.data && data.data.url) {
-            console.log('Uploaded image URL:', data.data.url);
+      this.ollamaServ
+        .uploadImageToImgbb(file)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: url => {
+            this.uploadedImgUrl = url;
+            console.log('Uploaded image URL:', url);
+            this.ollamaServ.onChangeIsImgUploading(false); // Reset uploading state
             // Optionally, you can append the image URL to the chat input or display it
-            // this.userInput += ` ${data.data.url}`;
-          } else {
-            console.error('Failed to get image URL from imgbb response:', data);
-          }
-        } catch (error) {
-          console.error('Error uploading image to imgbb:', error);
-        }
-      };
-      reader.readAsDataURL(file);
+            // this.userInput += ` ${url}`;
+          },
+          error: error => {
+            this.uploadedImgUrl = '';
+            this.ollamaServ.onChangeIsImgUploading(false); // Reset uploading state
+            console.error('Error uploading image to imgbb:', error);
+          },
+        });
     }
   }
 
   sendMessage(): void {
     if (this.userInput.trim()) {
       this.isThinking = true;
+
+      let msgWithUrl = '';
+      msgWithUrl = this.uploadedImgUrl ? `${this.uploadedImgUrl} ${this.userInput}` : this.userInput;
+
       // Add user message
-      this.messages.push({ content: this.userInput, sender: 'User' });
+      this.messages.push({ content: msgWithUrl, sender: 'User' });
 
       // Add initial AI message in "thinking" state
       this.messages.push({
@@ -265,6 +269,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
       // Clear user input and refocus
       this.userInput = '';
+      this.uploadedImgUrl = '';
+
+      // Reset the file input after sending the message
+      if (this.fileInput && this.fileInput.nativeElement) {
+        this.fileInput.nativeElement.value = '';
+      }
     }
   }
 
@@ -306,6 +316,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
     this.isThinking = false;
     this.isStreaming = false;
     this.userInput = '';
+    this.uploadedImgUrl = '';
 
     // Focus the input field
     setTimeout(() => {

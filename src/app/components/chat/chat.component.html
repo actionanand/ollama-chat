@@ -31,10 +31,10 @@
       [(ngModel)]="userInput"
       (keydown.enter)="!isThinking && !isStreaming && sendMessage()"
       [placeholder]="isThinking ? 'AI is thinking...' : isStreaming ? 'AI is responding...' : 'Type your message...'"
-      [disabled]="isThinking || isStreaming" />
+      [disabled]="isThinking || isStreaming || isImgUploading" />
 
     <!-- Send button (disabled during thinking) -->
-    <button *ngIf="!isStreaming" (click)="sendMessage()" [disabled]="isThinking">Send</button>
+    <button *ngIf="!isStreaming" (click)="sendMessage()" [disabled]="isThinking || isImgUploading">Send</button>
 
     <!-- Stop button (only shown during streaming) -->
     <button *ngIf="isStreaming" (click)="stopStreaming()" class="stop-button">Stop</button>

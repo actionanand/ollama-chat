@@ -1,31 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ErrorDialogService } from './error-dialog.service';
+import { environment as env } from '../../environments/environment'; // Adjust the import path as necessary
+import { ImgbbResponse } from '../models/imgbb.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OllamaService {
-  private apiUrl = 'http://localhost:11434/api';
+  private apiUrl = env.ollamaApiUrl;
 
   private defaultModelName = new BehaviorSubject<string>(''); // Set a default model name
   defaultModelName$ = this.defaultModelName.asObservable();
 
+  private isImgUploading = new BehaviorSubject<boolean>(false);
+  isImgUploading$ = this.isImgUploading.asObservable();
+
   // Add AbortController to cancel fetch requests
   private abortController: AbortController | null = null;
 
-  constructor(
-    private http: HttpClient,
-    private errorDialogServ: ErrorDialogService,
-  ) {}
+  private http = inject(HttpClient);
+  private errorDialogServ = inject(ErrorDialogService);
+  private destroyRef = inject(DestroyRef);
 
   onChangeDefaultModel(modelName: string): void {
     this.defaultModelName.next(modelName);
+  }
+
+  onChangeIsImgUploading(isUploading: boolean): void {
+    this.isImgUploading.next(isUploading);
   }
 
   sendMessage(model: string, messages: any[]): Observable<any> {
@@ -122,5 +131,64 @@ export class OllamaService {
         return throwError(() => error);
       }),
     );
+  }
+
+  /**
+   * Converts a File to a base64 string (without the data URL prefix).
+   * @param file The image file to convert
+   * @returns Observable<string> The base64 string
+   */
+  fileToBase64(file: File): Observable<string> {
+    return new Observable<string>(observer => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64String = result.split(',')[1];
+        observer.next(base64String);
+        observer.complete();
+      };
+      reader.onerror = e => observer.error(e);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Uploads a base64 image string to imgbb and returns an Observable of the image URL.
+   * @param base64String The base64 image string
+   * @returns Observable<string> The uploaded image URL
+   */
+  uploadBase64ToImgbb(base64String: string): Observable<string> {
+    const apiKey = env.imgbbKey || 'xxxxxx';
+    const uploadUrl = env.imgbbUploadUrl || 'https://api.imgbb.com/1/upload';
+    const formData = new FormData();
+    formData.append('key', apiKey);
+    formData.append('image', base64String);
+    formData.append('expiration', '600'); // Set expiration in seconds (e.g., 600 = 10 minutes)
+    console.log('formData:', formData);
+    return new Observable<string>(observer => {
+      this.http
+        .post<ImgbbResponse>(uploadUrl, formData)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: data => {
+            if (data && data.data && data.data.url) {
+              observer.next(data.data.url);
+              observer.complete();
+            } else {
+              observer.error(new Error('Failed to get image URL from imgbb response'));
+            }
+          },
+          error: err => observer.error(err),
+        });
+    });
+  }
+
+  /**
+   * Uploads an image file to imgbb and returns an Observable of the image URL.
+   * @param file The image file to upload
+   * @returns Observable<string> The uploaded image URL
+   */
+  uploadImageToImgbb(file: File): Observable<string> {
+    return this.fileToBase64(file).pipe(switchMap(base64 => this.uploadBase64ToImgbb(base64)));
   }
 }

@@ -84,6 +84,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
       this.isImgUploading = isUploading;
     });
 
+    this.ollamaServ.clearChat$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(clear => {
+      if (clear === 'clear') {
+        this.resetChat();
+      }
+    });
+
     this.destroyRef.onDestroy(() => {
       if (this.streamingSub) {
         this.streamingSub.unsubscribe();

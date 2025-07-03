@@ -22,6 +22,9 @@ export class OllamaService {
   private isImgUploading = new BehaviorSubject<boolean>(false);
   isImgUploading$ = this.isImgUploading.asObservable();
 
+  private clearChat = new BehaviorSubject<string>('do not clear');
+  clearChat$ = this.clearChat.asObservable();
+
   // Add AbortController to cancel fetch requests
   private abortController: AbortController | null = null;
 
@@ -35,6 +38,10 @@ export class OllamaService {
 
   onChangeIsImgUploading(isUploading: boolean): void {
     this.isImgUploading.next(isUploading);
+  }
+
+  onChangeClearChat(clear: string): void {
+    this.clearChat.next(clear);
   }
 
   sendMessage(model: string, messages: any[]): Observable<any> {

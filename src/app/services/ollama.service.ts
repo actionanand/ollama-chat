@@ -163,7 +163,7 @@ export class OllamaService {
     const formData = new FormData();
     formData.append('key', apiKey);
     formData.append('image', base64String);
-    formData.append('expiration', '600'); // Set expiration in seconds (e.g., 600 = 10 minutes)
+    formData.append('expiration', env.imgExpirationTimeInSeconds); // Set expiration in seconds (e.g., 600 = 10 minutes)
     console.log('formData:', formData);
     return new Observable<string>(observer => {
       this.http

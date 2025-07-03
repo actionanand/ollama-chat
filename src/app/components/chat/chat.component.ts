@@ -19,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OllamaService } from '../../services/ollama.service';
 import { MessageComponent } from '../message/message.component';
 import { Message } from '../../models/chat-message.model';
+import { environment as env } from '../../../environments/environment'; // Adjust the import path as necessary
 
 @Component({
   selector: 'app-chat',
@@ -45,6 +46,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
   isThinking: boolean = false;
   isStreaming: boolean = false;
+  imgExpirationTimeInMinutes = +env.imgExpirationTimeInSeconds / 60;
 
   private streamingSub!: Subscription;
   private defaultModelSub!: Subscription;

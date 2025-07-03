@@ -3,8 +3,8 @@ import { Component, OnInit, inject, DestroyRef, ViewChild } from '@angular/core'
 
 import { Subscription } from 'rxjs';
 
+import { ChatComponent } from './pages/chat/chat.component';
 import { ModelSelectorComponent } from './components/model-selector/model-selector.component';
-import { ChatComponent } from './components/chat/chat.component';
 import { LoggingService } from './services/logging.service';
 
 @Component({

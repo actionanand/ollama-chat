@@ -17,9 +17,9 @@ import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OllamaService } from '../../services/ollama.service';
-import { MessageComponent } from '../message/message.component';
 import { Message } from '../../models/chat-message.model';
 import { environment as env } from '../../../environments/environment'; // Adjust the import path as necessary
+import { MessageComponent } from '../../components/message/message.component';
 
 @Component({
   selector: 'app-chat',

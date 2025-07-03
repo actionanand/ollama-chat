@@ -45,7 +45,9 @@
           <button type="button" class="remove-image-btn" (click)="removeUploadedImg()" title="Remove image">
             &times;
           </button>
-          <span class="image-expiry-note">Uploaded image will be deleted in 10 min</span>
+          <span class="image-expiry-note"
+            >Uploaded image will be deleted in {{ imgExpirationTimeInMinutes }} minutes
+          </span>
         </span>
       </ng-container>
     </label>
